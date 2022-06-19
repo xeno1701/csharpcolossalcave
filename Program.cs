@@ -43,9 +43,9 @@ namespace csharpcolossalcave
             public room currentroom;
             public List<item> inv = new List<item>();
             public double health;
-            public double atk;
-            public double def;
-            public double speed;
+            //public double atk;
+            //public double def;
+            //public double speed;
         }
 
         public List<item> itemlist = new List<item>();
@@ -146,26 +146,57 @@ namespace csharpcolossalcave
             }
 
         }
+        void listing(string itemname)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("  * ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(itemname);
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+        void scavenge()
+        {
+            if (player.currentroom.items.Count > 0)
+            {
+                print("You notice in your vicinity some items:");
+                foreach (item i in player.currentroom.items)
+                {
+                    item temp = i;
+                    listing(temp.name);
+                }
+                Console.WriteLine();
+            } else {
+                print("You notice no items nearby.");
+                Console.WriteLine();
+            }
+        }
         bool parser(string input)
         {
             bool keepPlaying = true;
             input = capsfive(input);
             switch (input)
             {
-                case "N":
+                case "N": case "NORTH":
                     goNorth();
                     break;
-                case "S":
+                case "S": case "SOUTH":
                     goSouth();
                     break;
-                case "E":
+                case "E": case "EAST":
                     goEast();
                     break;
-                case "W":
+                case "W": case "WEST":
                     goWest();
                     break;
-                case "L":
+                case "L": case "LOOK":
                     lookAround();
+                    break;
+                case "H": case "HUNT": case "SCAVE":
+                    scavenge();
+                    break;
+                case "T": case "TAKE":
+                    scavenge();
                     break;
                 case "QUIT":
                     keepPlaying = false;
@@ -183,9 +214,7 @@ namespace csharpcolossalcave
             if (player.currentroom.exitNorth == 99)
             {
                 errorLocation();
-            }
-            else
-            {
+            } else {
                 player.currentroom = Rooms[player.currentroom.exitNorth - 1];
                 lookAround();
             }
@@ -195,9 +224,7 @@ namespace csharpcolossalcave
             if (player.currentroom.exitSouth == 99)
             {
                 errorLocation();
-            }
-            else
-            {
+            } else {
                 player.currentroom = Rooms[player.currentroom.exitSouth - 1];
                 lookAround();
             }
@@ -207,9 +234,7 @@ namespace csharpcolossalcave
             if (player.currentroom.exitEast == 99)
             {
                 errorLocation();
-            }
-            else
-            {
+            } else {
                 player.currentroom = Rooms[player.currentroom.exitEast - 1];
                 lookAround();
             }
@@ -219,9 +244,7 @@ namespace csharpcolossalcave
             if (player.currentroom.exitWest == 99)
             {
                 errorLocation();
-            }
-            else
-            {
+            } else {
                 player.currentroom = Rooms[player.currentroom.exitWest - 1];
                 lookAround();
             }
