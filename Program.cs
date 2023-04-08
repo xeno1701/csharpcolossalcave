@@ -191,7 +191,7 @@ namespace csharpcolossalcave
             {
                 item temp = i;
                 bool available = avaliableitems.Contains(temp);
-                if (available = true)
+                if (available == true)
                 {
                     listing(temp.name);
                 } else {
