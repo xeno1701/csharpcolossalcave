@@ -1,10 +1,13 @@
-﻿using System;
+﻿using csharpcolossal_cave;
+using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace csharpcolossalcave
 {
-    internal class Program
+    class Program
     {
+       Map Map = new Map();
         public struct item
         {
             public int code;
@@ -29,28 +32,18 @@ namespace csharpcolossalcave
         }
         void title()
         {
-            centralt("   _____      _                     _    _____                   _____  _  _   ", 1);
-            centralt("  / ____|    | |                   | |  / ____|                 / ____|| || |_ ", 2);
-            centralt(" | |     ___ | | ___  ___ ___  __ _| | | |     __ ___   _____  | |   |_  __  _|", 3);
-            centralt(" | |    / _ \\| |/ _ \\/ __/ __|/ _` | | | |    / _` \\ \\ / / _ \\ | |    _| || |_ ", 4);
-            centralt(" | |___| (_) | | (_) \\__ \\__ \\ (_| | | | |___| (_| |\\ V /  __/ | |___|_  __  _|", 5);
-            centralt("  \\_____\\___/|_|\\___/|___/___/\\__,_|_|  \\_____\\__,_| \\_/ \\___|  \\_____||_||_| ", 6);
+            centralt("                .                                              ", 1);
+            centralt("        .                  .     ╔═══╗╔═══╗╔═══╗╔═══╗╔═══╗╔═══╗╔═══╗╔═══╗  ╔═══╗╔═╗ ╔╗  ╔═══╗╔╗ ╔╗╔═══╗╔═══╗╔═══╗╔═══╗", 2);
+            centralt("  .         .                    ║╔══╝║╔═╗║║╔═╗║║╔═╗║║╔═╗║║╔═╗║╚╗╔╗║║╔══╝  ║╔═╗║║ ╚╗║║  ║╔══╝║║ ║║║╔═╗║║╔═╗║║╔═╗║║╔═╗║", 3);
+            centralt("                                 ║╚══╗║╚══╗║║ ╚╝║║ ║║║╚═╝║║║ ║║ ║║║║║╚══╗  ║║ ║║║╔╗╚╝║  ║╚══╗║║ ║║║╚═╝║║║ ║║║╚═╝║║║ ║║", 4);
+            centralt("                                 ║╔══╝╚══╗║║║ ╔╗║╚═╝║║╔══╝║╚═╝║ ║║║║║╔══╝  ║║ ║║║║╚╗ ║  ║╔══╝║║ ║║║╔╗╔╝║║ ║║║╔══╝║╚═╝║", 5);
+            centralt("         *              .        ║╚══╗║╚═╝║║╚═╝║║╔═╗║║║   ║╔═╗║╔╝╚╝║║╚══╗  ║╚═╝║║║ ║ ║  ║╚══╗║╚═╝║║║║╚╗║╚═╝║║║   ║╔═╗║", 6);
             centralt("================================================================================", 7);
             centralt("By DaganHX // Xeno1701", 8);
             centralt("================================================================================", 9);
             Console.WriteLine("");
         }
-        public struct room
-        {
-            public int code;
-            public string name;
-            public string text;
-            public int exitNorth;
-            public int exitSouth;
-            public int exitWest;
-            public int exitEast;
-            public List<item> items;
-        }
+        
         public struct textforprocessing
         {
             public string original;
@@ -59,7 +52,7 @@ namespace csharpcolossalcave
 
         public struct playablecharacter
         {
-            public room currentroom;
+            public Map.room currentroom;
             public double health;
             //public double atk;
             //public double def;
@@ -68,7 +61,7 @@ namespace csharpcolossalcave
 
         public List<item> itemlist = new List<item>();
         public List<item> avaliableitems = new List<item>();
-        public room[] Rooms = new room[5];
+        
         public playablecharacter player;
         public List<item> playerinv = new List<item>();
         public List<combineditem> combineditemlist = new List<combineditem>();
@@ -78,7 +71,7 @@ namespace csharpcolossalcave
 
             if (roomsInit == true)
             {
-                initialiseRooms();
+                Map.initialiseRooms();
             }
             if (itemsInit == true)
             {
@@ -115,7 +108,7 @@ namespace csharpcolossalcave
 
             foreach (item i in itemlist)
             {
-                foreach (room r in Rooms)
+                foreach (Map.room r in Map.Rooms)
                 {
                     if (i.startlocation == r.code)
                     {
@@ -125,37 +118,7 @@ namespace csharpcolossalcave
             }
         }
 
-        void initialiseRooms()
-        {
-            Rooms[0].code = 1;
-            Rooms[0].name = "a Small Shack";
-            Rooms[0].text = "The shack was deserted and full of homemade furniture packed with odds and ends.";
-            Rooms[0].exitNorth = 2;
-            Rooms[0].exitSouth = 99;
-            Rooms[0].exitEast = 99;
-            Rooms[0].exitWest = 99;
-            Rooms[0].items = new List<item>();
-
-            Rooms[1].code = 2;
-            Rooms[1].name = "a Beautiful Meadow";
-            Rooms[1].text = "The shack was stood strong and tall between the flowers and the grass, despite it's old look it complements the surroundings well.";
-            Rooms[1].exitNorth = 3;
-            Rooms[1].exitSouth = 1;
-            Rooms[1].exitEast = 4;
-            Rooms[1].exitWest = 5;
-            Rooms[1].items = new List<item>();
-
-            Rooms[2].code = 3;
-            Rooms[2].name = "a Hill";
-            Rooms[2].text = "The shack and meadow were visible from the top of the hill, now more beautiful than ever.";
-            Rooms[2].exitNorth = 99;
-            Rooms[2].exitSouth = 3;
-            Rooms[2].exitEast = 99;
-            Rooms[2].exitWest = 99;
-            Rooms[2].items = new List<item>();
-
-            player.currentroom = Rooms[0];
-        }
+        
 
         static void Main(string[] args)
         {
@@ -384,7 +347,7 @@ namespace csharpcolossalcave
             {
                 errorLocation();
             } else {
-                player.currentroom = Rooms[player.currentroom.exitNorth - 1];
+                player.currentroom = Map.Rooms[player.currentroom.exitNorth - 1];
                 lookAround();
             }
         }
@@ -394,7 +357,7 @@ namespace csharpcolossalcave
             {
                 errorLocation();
             } else {
-                player.currentroom = Rooms[player.currentroom.exitSouth - 1];
+                player.currentroom = Map.Rooms[player.currentroom.exitSouth - 1];
                 lookAround();
             }
         }
@@ -404,7 +367,7 @@ namespace csharpcolossalcave
             {
                 errorLocation();
             } else {
-                player.currentroom = Rooms[player.currentroom.exitEast - 1];
+                player.currentroom = Map.Rooms[player.currentroom.exitEast - 1];
                 lookAround();
             }
         }
@@ -414,7 +377,7 @@ namespace csharpcolossalcave
             {
                 errorLocation();
             } else {
-                player.currentroom = Rooms[player.currentroom.exitWest - 1];
+                player.currentroom = Map.Rooms[player.currentroom.exitWest - 1];
                 lookAround();
             }
         }
