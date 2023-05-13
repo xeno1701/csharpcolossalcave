@@ -38,9 +38,15 @@ namespace csharpcolossalcave
             centralt("                                 ║╚══╗║╚══╗║║ ╚╝║║ ║║║╚═╝║║║ ║║ ║║║║║╚══╗  ║║ ║║║╔╗╚╝║  ║╚══╗║║ ║║║╚═╝║║║ ║║║╚═╝║║║ ║║", 4);
             centralt("                                 ║╔══╝╚══╗║║║ ╔╗║╚═╝║║╔══╝║╚═╝║ ║║║║║╔══╝  ║║ ║║║║╚╗ ║  ║╔══╝║║ ║║║╔╗╔╝║║ ║║║╔══╝║╚═╝║", 5);
             centralt("         *              .        ║╚══╗║╚═╝║║╚═╝║║╔═╗║║║   ║╔═╗║╔╝╚╝║║╚══╗  ║╚═╝║║║ ║ ║  ║╚══╗║╚═╝║║║║╚╗║╚═╝║║║   ║╔═╗║", 6);
-            centralt("================================================================================", 7);
-            centralt("By DaganHX // Xeno1701", 8);
-            centralt("================================================================================", 9);
+            centralt("          \\    .                 ╚═══╝╚═══╝╚═══╝╚╝ ╚╝╚╝   ╚╝ ╚╝╚═══╝╚═══╝  ╚═══╝╚╝ ╚═╝  ╚═══╝╚═══╝╚╝╚═╝╚═══╝╚╝   ╚╝ ╚╝", 7);
+            centralt("           \\                .         ", 8);
+            centralt(" .          \\          .           ", 9);
+            centralt("", 10);
+            centralt("", 11);
+            centralt("", 12);
+            centralt("", 13);
+            centralt("", 14);
+            centralt("", 15);
             Console.WriteLine("");
         }
         
@@ -122,9 +128,9 @@ namespace csharpcolossalcave
 
         static void Main(string[] args)
         {
-            var prog = new Program();
-            prog.initAll(true, true);
-            prog.MainGameLoop();
+            Program Program = new Program();    
+            Program.initAll(true, true);
+            Program.MainGameLoop();
         }
 
         void MainGameLoop()
