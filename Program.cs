@@ -1,19 +1,20 @@
-﻿// ####################     BODGE CENTRAL    ####################
+﻿//        ####################     BODGE CENTRAL    ####################
 #pragma warning disable CA2241 // Provide correct arguments to formatting methods
 #pragma warning disable IDE0090 // New expression can be simplified
 #pragma warning disable IDE0057 // Substring can be simplified
 
-// ####################    LIBRARY IMPORTS   ####################
+//        ####################    LIBRARY IMPORTS   ####################
 using System;
 using System.Collections.Generic;
 using System.Data;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace csharpcolossalcave
 {
     class Program
     {
         // #################### VARIABLE DECLARATION ####################
-        // Rooms
+            // Rooms
         public Room[] Rooms = new Room[5];
             // Items
         public List<Item> itemlist = new List<Item>();
@@ -41,6 +42,7 @@ namespace csharpcolossalcave
             public ItemType type;
             public int startlocation;
             public bool active;
+            public double itemradiolevel;
         }
         public struct CombinedItem
         {
@@ -120,6 +122,7 @@ namespace csharpcolossalcave
             Rooms[0].code = 1;
             Rooms[0].name = "a Small Shack";
             Rooms[0].text = "The shack was deserted and full of homemade furniture packed with odds and ends.";
+            Rooms[0].radiolevel = 0.0;
             Rooms[0].exitNorth = 2;
             Rooms[0].exitSouth = -1;
             Rooms[0].exitEast = -1;
@@ -129,6 +132,7 @@ namespace csharpcolossalcave
             Rooms[1].code = 2;
             Rooms[1].name = "a Beautiful Meadow";
             Rooms[1].text = "The shack was stood strong and tall between the flowers and the grass, despite it's old look it complements the surroundings well.";
+            Rooms[1].radiolevel = 1.0;
             Rooms[1].exitNorth = 3;
             Rooms[1].exitSouth = 1;
             Rooms[1].exitEast = 4;
@@ -138,6 +142,7 @@ namespace csharpcolossalcave
             Rooms[2].code = 3;
             Rooms[2].name = "a Hill";
             Rooms[2].text = "The shack and meadow were visible from the top of the hill, now more beautiful than ever.";
+            Rooms[2].radiolevel = 0.5;
             Rooms[2].exitNorth = -1;
             Rooms[2].exitSouth = 3;
             Rooms[2].exitEast = -1;
@@ -157,6 +162,7 @@ namespace csharpcolossalcave
             tempitem.text = "The coins were legal tender, detailed with text and images of the kingdom.";
             tempitem.type = ItemType.Generic;
             tempitem.startlocation = 1;
+            tempitem.itemradiolevel = 0.5;
             tempitem.active = false;
             itemlist.Add(tempitem);
             avaliableitems.Add(tempitem);
@@ -166,6 +172,7 @@ namespace csharpcolossalcave
             tempitem.text = "The handcrafted leather coin wallet was mildly aged and was perfect for throwing thiefs off the tracks if they wanted to steal something...";
             tempitem.type = ItemType.Generic;
             tempitem.startlocation = 1;
+            tempitem.itemradiolevel = 0.7;
             tempitem.active = false;
             itemlist.Add(tempitem);
             avaliableitems.Add(tempitem);
@@ -230,7 +237,7 @@ namespace csharpcolossalcave
         }
 
         // ####################    GAME LOOP STUFF   ####################
-        // Main & Loop
+            // Main & Loop
         static void Main()
         {
             Program Program = new Program();
@@ -241,8 +248,7 @@ namespace csharpcolossalcave
         {
             bool inMainLoop = true;
             Title();
-
-            LookAround();
+            CurrentLocation(true);
             while (inMainLoop == true)
             {
                 string input = Read();
@@ -255,6 +261,8 @@ namespace csharpcolossalcave
         {
             bool keepPlaying = true;
             input = CapsFiveChars(input);
+            Checkifalive();
+            Radiation();
             switch (input)
             {
                 case "N":
@@ -275,7 +283,6 @@ namespace csharpcolossalcave
                     break;
                 case "L":
                 case "LOOK":
-                    CurrentLocation();
                     LookAround();
                     break;
                 case "H":
@@ -328,17 +335,79 @@ namespace csharpcolossalcave
             }
         }
             // Player In Map
-        void CurrentLocation()
+        void CurrentLocation(bool linefeed)
         {
             Print("You are in " + player.currentroom.name + ".");
-            Print("");
+            if (linefeed)
+            {
+                Print("");
+            }
         }
 
         void LookAround()
         {
-            Print("You are in " + player.currentroom.name + ".");
+            CurrentLocation(false);
             Print(player.currentroom.text);
             Print("");
+        }
+        // Health 
+        void Radiation()
+        {
+            double countspermin = (player.currentroom.radiolevel + Averageinvradiation()) * 60;
+            if (countspermin > 10)
+            {
+                player.health = -(countspermin / 16);
+            }
+        }
+
+        void Checkifalive()
+        {
+            double countspermin = (player.currentroom.radiolevel + verageinvradiation()) * 60;
+            if (player.health <= 0)
+            {
+                if (countspermin / 16 > 1)
+                {
+                    Die("Most Likely Radiation Poisoning");
+                } else {
+                    Die("");
+                }
+            }
+        }
+
+        static void Die(string cause)
+        {
+            Console.Clear();
+            Thread.Sleep(400);
+            TitleDecor("You Died!");
+            Thread.Sleep(2000);
+            Console.Clear();
+            Thread.Sleep(400);
+
+        if (cause.Length != 0) 
+            {
+                TitleDecor("Cause of death: " + cause + ".");
+                Thread.Sleep(2000);
+            }
+
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Console.WriteLine("");
+            Environment.Exit(0);
+        }
+        double Averageinvradiation()
+        {
+            double averageinvradiation = 0;
+            if (playerinv.Count >= 1) {
+                foreach (Item i in playerinv)
+                {
+                    averageinvradiation =+ i.itemradiolevel;
+                }
+
+                averageinvradiation /= playerinv.Count;
+            return averageinvradiation;
+            } else {
+                return 0;
+            }
         }
 
         // ####################      ITEM STUFF      ####################
@@ -575,7 +644,7 @@ namespace csharpcolossalcave
             // Listing
         static void BulletList(string itemname)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write("  * ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(itemname);
@@ -585,15 +654,21 @@ namespace csharpcolossalcave
             // Output
         static void Print(string input)
         {
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine(input);
+            Console.ForegroundColor = ConsoleColor.Green;
+            for(int i = 0; i < input.Length; i++)
+            {
+                Console.Write((char)input[i]);
+                Thread.Sleep(10);
+            }
+            Thread.Sleep(100);
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
         }
         static string Read()
         {
-            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write("   @>  ");
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.White;
             var Readfromconsole = Console.ReadLine();
             Console.ForegroundColor = ConsoleColor.White;
             return Readfromconsole;
